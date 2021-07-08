@@ -364,7 +364,9 @@ bool CompressedImageGetColor(unsigned char color[4], unsigned int s, unsigned in
     switch (format)
     {
     case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
     case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
     {
         const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
         texelsBlock += blockNumber; //jump to block
@@ -489,7 +491,9 @@ void compressedBlockOrientationConversion(const GLenum format, const unsigned ch
     switch (format)
     {
     case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
     case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
     {
         const DXT1TexelsBlock *src_texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(src_block);
         //make a copy as source might be equal to destination
@@ -608,7 +612,9 @@ void compressedBlockStripAlhpa(const GLenum format, const unsigned char *src_blo
     {
     default:
     case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
     case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) :
+    case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT):
     {
         const DXT1TexelsBlock *src_texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(src_block);
         //make a copy as source might be equal to destination
@@ -630,7 +636,9 @@ void compressedBlockStripAlhpa(const GLenum format, const unsigned char *src_blo
         break;
     }
     case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT) :
+    case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT) :
     case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) :
+    case(GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT) :
     {
         const DXT3TexelsBlock *src_texelsBlock = reinterpret_cast<const DXT3TexelsBlock*>(src_block);
         //make a copy as source might be equal to destination

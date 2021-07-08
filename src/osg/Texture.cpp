@@ -26,6 +26,8 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+#include <algorithm> // included for std::max
+
 #ifndef GL_TEXTURE_WRAP_R
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
@@ -1784,35 +1786,66 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
 {
     switch(internalFormat)
     {
-        case(GL_COMPRESSED_ALPHA_ARB):
-        case(GL_COMPRESSED_INTENSITY_ARB):
-        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
-        case(GL_COMPRESSED_LUMINANCE_ARB):
-        case(GL_COMPRESSED_RGBA_ARB):
-        case(GL_COMPRESSED_RGB_ARB):
-        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
-        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
-        case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
-        case(GL_COMPRESSED_RED_RGTC1_EXT):
-        case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
-        case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
-        case(GL_ETC1_RGB8_OES):
-        case(GL_COMPRESSED_RGB8_ETC2):
-        case(GL_COMPRESSED_SRGB8_ETC2):
-        case(GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
-        case(GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
-        case(GL_COMPRESSED_RGBA8_ETC2_EAC):
-        case(GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
-        case(GL_COMPRESSED_R11_EAC):
-        case(GL_COMPRESSED_SIGNED_R11_EAC):
-        case(GL_COMPRESSED_RG11_EAC):
-        case(GL_COMPRESSED_SIGNED_RG11_EAC):
-        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
-        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
-        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_ALPHA_ARB):
+        case (GL_COMPRESSED_INTENSITY_ARB):
+        case (GL_COMPRESSED_LUMINANCE_ALPHA_ARB):
+        case (GL_COMPRESSED_LUMINANCE_ARB):
+        case (GL_COMPRESSED_RGBA_ARB):
+        case (GL_COMPRESSED_RGB_ARB):
+        case (GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_SRGB_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT):
+        case (GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT):
+        case (GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
+        case (GL_COMPRESSED_RED_RGTC1_EXT):
+        case (GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
+        case (GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case (GL_ETC1_RGB8_OES):
+        case (GL_COMPRESSED_RGB8_ETC2):
+        case (GL_COMPRESSED_SRGB8_ETC2):
+        case (GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case (GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2):
+        case (GL_COMPRESSED_RGBA8_ETC2_EAC):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC):
+        case (GL_COMPRESSED_R11_EAC):
+        case (GL_COMPRESSED_SIGNED_R11_EAC):
+        case (GL_COMPRESSED_RG11_EAC):
+        case (GL_COMPRESSED_SIGNED_RG11_EAC):
+        case (GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case (GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case (GL_COMPRESSED_RGBA_ASTC_4x4_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_5x4_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_5x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_6x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_6x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_8x8_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x5_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x6_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x8_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_10x10_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_12x10_KHR):
+        case (GL_COMPRESSED_RGBA_ASTC_12x12_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR):
+        case (GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR):
             return true;
         default:
             return false;
@@ -1821,9 +1854,11 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
 
 void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height, GLint depth, GLint& blockSize, GLint& size)
 {
-    if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
+    if (internalFormat == GL_COMPRESSED_RGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+        || internalFormat == GL_COMPRESSED_SRGB_S3TC_DXT1_EXT || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT)
         blockSize = 8;
-    else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
+    else if (internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
+        || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT || internalFormat == GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT)
         blockSize = 16;
     else if (internalFormat == GL_ETC1_RGB8_OES)
         blockSize = 8;
@@ -2362,10 +2397,11 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
                         //state.checkGLErrors("before extensions->glCompressedTexSubImage2D(");
 
+                        // Note: glCompressedTexSubImage2D uses internal format, not pixel format. See https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/glCompressedTexSubImage2D.xml
                         extensions->glCompressedTexSubImage2D(target, k,
                             0, 0,
                             width, height,
-                            (GLenum)image->getPixelFormat(),
+                            (GLenum)image->getInternalTextureFormat(),
                             size,
                             dataPtr + image->getMipmapOffset(k));
 
@@ -2616,7 +2652,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
             extensions->glCompressedTexSubImage2D(target, 0,
                 0,0,
                 inwidth, inheight,
-                (GLenum)image->getPixelFormat(),
+                (GLenum)image->getInternalTextureFormat(),
                 size,
                 dataPtr);
         }
@@ -2670,7 +2706,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                     extensions->glCompressedTexSubImage2D(target, k,
                                                        0, 0,
                                                        width, height,
-                                                       (GLenum)image->getPixelFormat(),
+                                                       (GLenum)image->getInternalTextureFormat(),
                                                        size,
                                                        dataPtr + image->getMipmapOffset(k));
 
