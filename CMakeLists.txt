@@ -47,6 +47,8 @@ ENDIF()
 
 PROJECT(OpenSceneGraph)
 
+set (CMAKE_CXX_STANDARD 14)
+
 # Set OSX architecture flags here, since they must be specified before
 # creating the actual OSG project.
 # Note that the CMAKE_OSX_* variables are not well documented in
